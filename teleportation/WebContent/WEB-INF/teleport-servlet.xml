@@ -8,8 +8,14 @@
 			http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 			
 	<context:component-scan base-package="com.appdirect.teleport.controller" />
+	
+	<import resource="security.xml" />
 
 	<bean id="teleportationService" class="com.appdirect.teleport.service.TeleportationServiceImpl" />
+	
+	<bean id="userLoginService" class="com.appdirect.teleport.service.UserLoginServiceImpl" />
+	
+	<bean id="authenticationFacade" class="com.appdirect.teleport.security.AuthenticationFacadeImpl" />
 
 	<bean id="templateResolver"
 		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
@@ -30,4 +36,6 @@
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
       <property name="persistenceUnitName" value="h2"/>
    </bean>
+   
+  
 </beans>

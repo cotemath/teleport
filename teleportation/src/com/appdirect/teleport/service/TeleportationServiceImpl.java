@@ -29,9 +29,12 @@ public class TeleportationServiceImpl implements TeleportationService {
 	@PersistenceUnit(unitName="h2") 
 	private EntityManagerFactory entityManagerFactory;
 	
-	public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+	/*
+	 * Setter for testing purposes
+	 */
+	void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
-	}
+	}	
 
 	/**
 	 * {@inheritDoc}
@@ -47,10 +50,14 @@ public class TeleportationServiceImpl implements TeleportationService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double calculateTeleportationCostInCurrency(double distanceInKilometers, CurrencyEnum currency) {
-		Assert.isTrue(distanceInKilometers>=0);
-		Assert.notNull(currency);
-		return (this.calculateTeleportationCostInCredits(distanceInKilometers) * currency.getExchangeRate());
+	public double calculateTeleportationCostInCurrency(Long originId, Long destinationId, CurrencyEnum currency) {
+		Assert.notNull(originId, "the originId cannot be null");
+		Assert.notNull(destinationId, "the destinationId cannot be null");
+		Assert.notNull(currency, "the currency must be provided");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();	
+		TeleportLocation origin = entityManager.find(TeleportLocation.class, originId);
+		TeleportLocation destination = entityManager.find(TeleportLocation.class, destinationId);
+		return (this.calculateTeleportationCostInCredits(getGeographicDistanceInKilometers(origin, destination)) * currency.getExchangeRate());
 	}
 
 	/**
@@ -68,10 +75,12 @@ public class TeleportationServiceImpl implements TeleportationService {
 	 */
 	@Transactional
 	@Override
-	public boolean teleport(User user, TeleportLocation origin, TeleportLocation destination, TeleportablePayload payload) throws InsufficientCreditException {
+	public boolean teleport(User user, Long originId, Long destinationId, TeleportablePayload payload) throws InsufficientCreditException {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();	
+		TeleportLocation origin = entityManager.find(TeleportLocation.class, originId);
+		TeleportLocation destination = entityManager.find(TeleportLocation.class, destinationId);
 		double distance = this.getGeographicDistanceInKilometers(origin, destination);
-		int credits = this.calculateTeleportationCostInCredits(distance);
-		EntityManager entityManager = entityManagerFactory.createEntityManager();		
+		int credits = this.calculateTeleportationCostInCredits(distance);			
 		user.addCredits(-1 * credits);
 		entityManager.persist(user);
 		return true;		

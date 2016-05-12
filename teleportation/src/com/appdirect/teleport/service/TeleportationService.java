@@ -28,11 +28,12 @@ public interface TeleportationService {
 	public double getGeographicDistanceInKilometers(TeleportLocation origin, TeleportLocation destination);
 	
 	/**
-	 * @param distanceInKilometers -> the distance in kilometer between two points
+	 * @param originId -> the id of the starting point
+	 * @param destinationId -> the id of the end point
 	 * @param currency -> the target currency
 	 * @return the teleportation cost in localized currency
 	 */
-	public double calculateTeleportationCostInCurrency(double distanceInKilometers, CurrencyEnum currency);
+	public double calculateTeleportationCostInCurrency(Long originId, Long destinationId, CurrencyEnum currency);
 	
 	/**
 	 * @param distanceInKilometers -> the distance in kilometer between two points
@@ -44,13 +45,13 @@ public interface TeleportationService {
 	 * Teleports the selected Payload (Person or Thing) from the origin to the destination
 	 * 
 	 * @param user -> the user whose account will get billed for teleportation
-	 * @param origin -> the origin Point represented as latitude and longitude  
-	 * @param destination -> the destination Point represented as latitude and longitude
+	 * @param originId -> the primary key of the origin Point represented as latitude and longitude  
+	 * @param destination -> the primary key of the destination Point represented as latitude and longitude
 	 * @param payload -> The payload to teleport
 	 * @return true if teleportation was successful
 	 * @throws InsufficientCreditException 
 	 */
-	public boolean teleport(User user, TeleportLocation origin, TeleportLocation destination, TeleportablePayload payload) throws InsufficientCreditException;
+	public boolean teleport(User user, Long originId, Long destinationId, TeleportablePayload payload) throws InsufficientCreditException;
 	
 	/**
 	 * Allows the user to purchase teleportation credits

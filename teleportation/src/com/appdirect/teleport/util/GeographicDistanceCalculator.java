@@ -42,7 +42,7 @@ public class GeographicDistanceCalculator {
 	private static final int HALF_CIRCLE = 180;
 	
 	/**
-	 * Given 2 Points (latitude/logitude), calculate the distance in Kilometers
+	 * Given 2 Points (latitude/longitude), calculate the distance in Kilometers
 	 * @param point1 the first Point
 	 * @param point2 the second Point
 	 * @return the distance in Kilometers

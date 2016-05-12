@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Teleportation App!</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+	<h3>
+		Welcome <span th:text="${authentication.principal.firstname}" /> 
+		<span th:text="${authentication.principal.lastname}" />, you currently
+		have <span th:text="${authentication.principal.teleportationCredits}" />
+		credits
+	</h3>
+
+	<br />
+	<br />
+
+	<h3>Estimate teleportation costs</h3>
+	<form action="#" th:action="@{estimateCost}" method="post">
+		From: 
+		<select name="originId">
+			<option th:each="teleportLocation: ${teleportLocations}"
+				th:value="${teleportLocation.id}"
+				th:text="${teleportLocation.city} + ', ' + ${teleportLocation.country}">Location</option>
+		</select> 
+		To: 
+		<select name="destinationId">
+			<option th:each="teleportLocation: ${teleportLocations}"
+				th:value="${teleportLocation.id}"
+				th:text="${teleportLocation.city} + ', ' + ${teleportLocation.country}">Location</option>
+		</select> 
+		<select name="currency">
+			<option
+				th:each="currency : ${T(com.appdirect.teleport.domain.CurrencyEnum).values()}"
+				th:value="${currency}" th:text="${currency}"></option>
+		</select>
+
+		<button>Estimate!</button>
+	</form>
+
+	<br />
+	<br />
+
+	<h3>Purchase Credit</h3>
+
+	<form action="#" th:action="@{buyCredits}" method="post">
+		Amount <input type="text" name="amount" /> 
+		<select name="currency">
+			<option
+				th:each="currency : ${T(com.appdirect.teleport.domain.CurrencyEnum).values()}"
+				th:value="${currency}" th:text="${currency}"></option>
+		</select>
+
+		<button>Buy!</button>
+	</form>
+
+	<br />
+	<br />
+
+	<h3>Teleport</h3>
+	<form action="#" th:action="@{teleport}" method="post">
+		From: 
+		<select name="originId">
+			<option th:each="teleportLocation: ${teleportLocations}"
+				th:value="${teleportLocation.id}"
+				th:text="${teleportLocation.city} + ', ' + ${teleportLocation.country}">Location</option>
+		</select> 
+		To: 
+		<select name="destinationId">
+			<option th:each="teleportLocation: ${teleportLocations}"
+				th:value="${teleportLocation.id}"
+				th:text="${teleportLocation.city} + ', ' + ${teleportLocation.country}">Location</option>
+		</select>
+
+		<button>Teleport!</button>
+	</form>
+
+	<br />
+	<br />
+
+	<h3>Available locations:</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>City</th>
+				<th>Country</th>
+				<th>Latitude</th>
+				<th>Longitude</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="teleportLocation: ${teleportLocations}">
+				<td th:text="${teleportLocation.city}">N/A</td>
+				<td th:text="${teleportLocation.country}">N/A</td>
+				<td th:text="${teleportLocation.geographicCoordinates.latitude}">N/A</td>
+				<td th:text="${teleportLocation.geographicCoordinates.longitude}">N/A</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

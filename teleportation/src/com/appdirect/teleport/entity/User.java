@@ -1,11 +1,15 @@
 package com.appdirect.teleport.entity;
 
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.appdirect.teleport.error.InsufficientCreditException;
 
@@ -14,11 +18,12 @@ import com.appdirect.teleport.error.InsufficientCreditException;
  *
  */
 @Entity
-public class User {
+public class User implements UserDetails {
+
+	private static final long serialVersionUID = -4057473596714403693L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	private String username;
 	
 	private String firstname;
 	
@@ -26,7 +31,7 @@ public class User {
 	
 	private String email;
 	
-	private String username;
+	private String password;
 	
 	private int teleportationCredits;	
 	
@@ -34,13 +39,17 @@ public class User {
 		//default constructor for JPA
 	}
 	
-	public User(String firstname, String lastname, String email, String username) {
+	public User(String username, String firstname, String lastname, String email, String password,
+			int teleportationCredits) {
 		super();
+		this.username = username;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.email = email;
-		this.username = username;
+		this.password = password;
+		this.teleportationCredits = teleportationCredits;
 	}
+
 
 	public String getFirstname() {
 		return firstname;
@@ -71,6 +80,46 @@ public class User {
 		this.teleportationCredits += creditsToAdd;
 	}
 
+	public int getTeleportationCredits() {
+		return teleportationCredits;
+	}
+
+	public void setTeleportationCredits(int teleportationCredits) {
+		this.teleportationCredits = teleportationCredits;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<SimpleGrantedAuthority> auths = new java.util.ArrayList<SimpleGrantedAuthority>();
+        auths.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return auths;
+	}
+
+	@Override
+	public String getPassword() {	
+		return password;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -78,6 +127,8 @@ public class User {
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
 		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + teleportationCredits;
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -106,6 +157,13 @@ public class User {
 				return false;
 		} else if (!lastname.equals(other.lastname))
 			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (teleportationCredits != other.teleportationCredits)
+			return false;
 		if (username == null) {
 			if (other.username != null)
 				return false;
@@ -116,17 +174,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [firstname=" + firstname + ", lastname=" + lastname + ", email=" + email + ", username=" + username
-				+ ", teleportationCredits=" + teleportationCredits + "]";
+		return "User [username=" + username + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email
+				+ ", password=" + password + ", teleportationCredits=" + teleportationCredits + "]";
 	}
-
-	public int getTeleportationCredits() {
-		return teleportationCredits;
-	}
-
-	public void setTeleportationCredits(int teleportationCredits) {
-		this.teleportationCredits = teleportationCredits;
-	}
-
 	
 }

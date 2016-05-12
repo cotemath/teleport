@@ -87,7 +87,7 @@ public class TestTeleportationServiceImpl {
 
     @SuppressWarnings("unchecked")
 	@Before
-    public void beginTransaction() {      
+    public void setup() {      
     	when(mockedEntityManagerFactory.createEntityManager()).thenReturn(mockedEntityManager);
     	when(mockedEntityManager.createNamedQuery(anyString(),any(Class.class))).thenReturn(mockedTypedQuery);
         teleportationService = new TeleportationServiceImpl();
@@ -136,15 +136,23 @@ public class TestTeleportationServiceImpl {
      */
     @Test(expected=IllegalArgumentException.class)
 	public void testCalculateTeleportationCostInCurrencyIsNull() {
-		teleportationService.calculateTeleportationCostInCurrency(5, null);
+		teleportationService.calculateTeleportationCostInCurrency(1L,2L, null);
 	}
     
     /**
-     * Distance is negative, method should throw IllegalArgumentException
+     * originId is null, method should throw IllegalArgumentException
      */
     @Test(expected=IllegalArgumentException.class)
-	public void testCalculateTeleportationCostInCurrencyDistanceIsNegative() {
-		teleportationService.calculateTeleportationCostInCurrency(-1, CurrencyEnum.USD);
+	public void testCalculateTeleportationOriginIsNull() {
+		teleportationService.calculateTeleportationCostInCurrency(null,2L, CurrencyEnum.USD);
+	}
+    
+    /**
+     * destinationId is null, method should throw IllegalArgumentException
+     */
+    @Test(expected=IllegalArgumentException.class)
+	public void testCalculateTeleportationDestinationIsNull() {
+		teleportationService.calculateTeleportationCostInCurrency(1L,null, CurrencyEnum.USD);
 	}
     
     /**
@@ -152,7 +160,13 @@ public class TestTeleportationServiceImpl {
      */
     @Test
 	public void testCalculateTeleportationCostInCurrencyUSDSuccess() {
-		Assert.assertTrue(teleportationService.calculateTeleportationCostInCurrency(6, CurrencyEnum.USD)==12);
+    	when(mockedOrigin.getGeographicCoordinates()).thenReturn(A_LOCATION);
+		when(mockedDestination.getGeographicCoordinates()).thenReturn(ANOTHER_LOCATION_FAR_AWAY);
+		when(mockedOrigin.getId()).thenReturn(1L);
+		when(mockedDestination.getId()).thenReturn(2L);
+		when(mockedEntityManager.find(TeleportLocation.class, 1L)).thenReturn(mockedOrigin);
+		when(mockedEntityManager.find(TeleportLocation.class, 2L)).thenReturn(mockedDestination);
+		Assert.assertEquals(23461,teleportationService.calculateTeleportationCostInCurrency(1L,2L, CurrencyEnum.USD),0);
 	}
     
     /**
@@ -160,7 +174,13 @@ public class TestTeleportationServiceImpl {
      */
     @Test
 	public void testCalculateTeleportationCostInCurrencyCADSuccess() {
-		Assert.assertTrue(teleportationService.calculateTeleportationCostInCurrency(6, CurrencyEnum.CAD)==15.24);
+    	when(mockedOrigin.getGeographicCoordinates()).thenReturn(A_LOCATION);
+		when(mockedDestination.getGeographicCoordinates()).thenReturn(ANOTHER_LOCATION_FAR_AWAY);
+		when(mockedOrigin.getId()).thenReturn(1L);
+		when(mockedDestination.getId()).thenReturn(2L);
+		when(mockedEntityManager.find(TeleportLocation.class, 1L)).thenReturn(mockedOrigin);
+		when(mockedEntityManager.find(TeleportLocation.class, 2L)).thenReturn(mockedDestination);
+		Assert.assertEquals(29795.47,teleportationService.calculateTeleportationCostInCurrency(1L,2L, CurrencyEnum.CAD),0);
 	}
     
     /**
@@ -219,7 +239,13 @@ public class TestTeleportationServiceImpl {
 		mockedUser.setTeleportationCredits(10);
 		when(mockedOrigin.getGeographicCoordinates()).thenReturn(A_LOCATION);
 		when(mockedDestination.getGeographicCoordinates()).thenReturn(ANOTHER_LOCATION_FAR_AWAY);
-		teleportationService.teleport(mockedUser, mockedOrigin, mockedDestination, mockedPayload);
+		when(mockedOrigin.getId()).thenReturn(1L);
+		when(mockedDestination.getId()).thenReturn(2L);
+		when(mockedEntityManager.find(TeleportLocation.class, 1L)).thenReturn(mockedOrigin);
+		when(mockedEntityManager.find(TeleportLocation.class, 2L)).thenReturn(mockedDestination);
+		teleportationService.teleport(mockedUser, mockedOrigin.getId(), mockedDestination.getId(), mockedPayload);
+		verify(mockedEntityManager).find(TeleportLocation.class, 1L);
+		verify(mockedEntityManager).find(TeleportLocation.class, 2L);
 		verify(mockedEntityManagerFactory,never()).createEntityManager();
 		verify(mockedEntityManager,never()).persist(mockedUser);
 		verify(mockedUser,never()).addCredits(5000);
@@ -235,9 +261,16 @@ public class TestTeleportationServiceImpl {
 		verify(mockedUser).addCredits(100000);
 		when(mockedOrigin.getGeographicCoordinates()).thenReturn(A_LOCATION);
 		when(mockedDestination.getGeographicCoordinates()).thenReturn(ANOTHER_LOCATION_CLOSE_BY);
-		Assert.assertTrue(teleportationService.teleport(mockedUser, mockedOrigin, mockedDestination, mockedPayload));
+		when(mockedOrigin.getId()).thenReturn(1L);
+		when(mockedDestination.getId()).thenReturn(2L);
+		when(mockedEntityManager.find(TeleportLocation.class, 1L)).thenReturn(mockedOrigin);
+		when(mockedEntityManager.find(TeleportLocation.class, 2L)).thenReturn(mockedDestination);
+		Assert.assertTrue(teleportationService.teleport(mockedUser, mockedOrigin.getId(), mockedDestination.getId(), mockedPayload));
+		verify(mockedEntityManager).find(TeleportLocation.class, 1L);
+		verify(mockedEntityManager).find(TeleportLocation.class, 2L);
 		verify(mockedEntityManagerFactory).createEntityManager();
 		verify(mockedEntityManager).persist(mockedUser);
 		verify(mockedUser).addCredits(-23461);
 	}
 }
+
