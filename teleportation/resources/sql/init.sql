@@ -1,7 +1,7 @@
 -- A few statements to populate our in-memory database
 
-INSERT INTO User (username,password,firstname,lastname,email,teleportationCredits) VALUES ('joe','test','Joe','Smith','js@thisisafakedomain.com',0);
-INSERT INTO User (username,password,firstname,lastname,email,teleportationCredits) VALUES ('janedoe','abc123','Jane','Doe','jd@thisisafakedomain.com',1000);
+INSERT INTO User (uuid,openId,username,password,firstname,lastname,email,teleportationCredits) VALUES ('45678','https://plus.google.com/109571248969653749454','joe','test','Joe','Smith','js@thisisafakedomain.com',0);
+INSERT INTO User (uuid,openId,username,password,firstname,lastname,email,teleportationCredits) VALUES ('98765','','janedoe','abc123','Jane','Doe','jd@thisisafakedomain.com',1000);
 
 INSERT INTO TeleportLocation (id,city,country,latitude,longitude) VALUES (1,'Montreal','Canada',45.5017,73.5673);
 INSERT INTO TeleportLocation (id,city,country,latitude,longitude) VALUES (2,'New York','USA',40.7128,74.0059);

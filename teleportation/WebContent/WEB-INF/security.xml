@@ -5,11 +5,14 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
       
+    <security:http pattern="/teleport/appDirect/event/**" security="none" /> <!-- Don't protect the  URL for integration API -->  
+      
     <security:http auto-config="true" >
         <intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
         <form-login  authentication-failure-url="/Access_Denied" />
+        <openid-login user-service-ref="userLoginService" /> <!-- TODO: fix this -->
     </security:http>
-  
+    
     <security:authentication-manager id="dao-auth">
         <authentication-provider user-service-ref="userLoginService" />        
     </security:authentication-manager>      

@@ -33,23 +33,37 @@ public class User implements UserDetails {
 	
 	private String password;
 	
+	private String uuid;
+	
+	private String openId;
+	
 	private int teleportationCredits;	
 	
 	User() {
 		//default constructor for JPA
 	}
 	
-	public User(String username, String firstname, String lastname, String email, String password,
-			int teleportationCredits) {
+
+	public User(String username, String firstname, String lastname, String email, String password, String uuid,
+			String openId, int teleportationCredits) {
 		super();
 		this.username = username;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.email = email;
 		this.password = password;
+		this.uuid = uuid;
+		this.openId = openId;
 		this.teleportationCredits = teleportationCredits;
 	}
 
+	public String getUuid() {
+		return uuid;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
 
 	public String getFirstname() {
 		return firstname;
@@ -120,6 +134,7 @@ public class User implements UserDetails {
 		return true;
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -127,11 +142,14 @@ public class User implements UserDetails {
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
 		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
+		result = prime * result + ((openId == null) ? 0 : openId.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + teleportationCredits;
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -157,6 +175,11 @@ public class User implements UserDetails {
 				return false;
 		} else if (!lastname.equals(other.lastname))
 			return false;
+		if (openId == null) {
+			if (other.openId != null)
+				return false;
+		} else if (!openId.equals(other.openId))
+			return false;
 		if (password == null) {
 			if (other.password != null)
 				return false;
@@ -169,13 +192,20 @@ public class User implements UserDetails {
 				return false;
 		} else if (!username.equals(other.username))
 			return false;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
 		return true;
 	}
+
 
 	@Override
 	public String toString() {
 		return "User [username=" + username + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email
-				+ ", password=" + password + ", teleportationCredits=" + teleportationCredits + "]";
+				+ ", password=" + password + ", uuid=" + uuid + ", openId=" + openId + ", teleportationCredits="
+				+ teleportationCredits + "]";
 	}
 	
 }
