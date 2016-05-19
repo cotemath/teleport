@@ -11,6 +11,10 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
+/**
+ * Exposes the AppDirect integration API
+ *
+ */
 public interface AppDirectIntegrationService {
 
 	/**

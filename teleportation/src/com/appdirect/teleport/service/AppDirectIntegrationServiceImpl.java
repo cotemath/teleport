@@ -23,6 +23,8 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 /**
  * 
  * Implementation of the AppDirectIntegrationService API
+ * 
+ * TODO: add test class for this
  *
  */
 public class AppDirectIntegrationServiceImpl implements AppDirectIntegrationService {
@@ -59,6 +61,7 @@ public class AppDirectIntegrationServiceImpl implements AppDirectIntegrationServ
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 */
 	@Override
 	public RequestStatus handleSubscriptionOrder(Event anEvent) {
@@ -97,8 +100,8 @@ public class AppDirectIntegrationServiceImpl implements AppDirectIntegrationServ
 	 */
 	@Override
 	public RequestStatus handleSubscriptionChange(Event anEvent) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Implement this
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -106,8 +109,8 @@ public class AppDirectIntegrationServiceImpl implements AppDirectIntegrationServ
 	 */
 	@Override
 	public RequestStatus handleSubscriptionCancel(Event anEvent) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Implement this
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -115,7 +118,7 @@ public class AppDirectIntegrationServiceImpl implements AppDirectIntegrationServ
 	 */
 	@Override
 	public RequestStatus handleSubscriptionNotice(Event anEvent) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Implement this
+		throw new UnsupportedOperationException();
 	}	
 }
